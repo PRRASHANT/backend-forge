@@ -15,8 +15,8 @@ export default function ProjectWorkspaceLayout() {
     const fetchProject = async () => {
       try {
         const res = await apiClient.get(`/projects/${projectId}`);
-        setProject(res.data.project);
-        setRole(res.data.role);
+        setProject(res.data.data.project);
+        setRole(res.data.data.role);
       } catch (err) {
         console.error(err);
       } finally {

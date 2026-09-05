@@ -30,9 +30,9 @@ export default function ApiExplorer() {
     // Load collections for selector
     apiClient.get(`/projects/${project._id}/collections`)
       .then(res => {
-        setCollections(res.data.collections || []);
-        if (res.data.collections?.length > 0) {
-          setSelectedCollection(res.data.collections[0].slug);
+        setCollections(res.data.data.collections || []);
+        if (res.data.data.collections?.length > 0) {
+          setSelectedCollection(res.data.data.collections[0].slug);
         }
       })
       .catch(console.error);

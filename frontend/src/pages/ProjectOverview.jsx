@@ -18,8 +18,8 @@ export default function ProjectOverview() {
           apiClient.get(`/projects/${project._id}/api-keys`).catch(() => null)
         ]);
         setStats({
-          collections: colRes?.data?.collections?.length || 0,
-          apiKeys: keysRes?.data?.apiKeys?.length || 0,
+          collections: colRes?.data?.data?.collections?.length || 0,
+          apiKeys: keysRes?.data?.data?.apiKeys?.length || 0,
         });
       } catch (e) {
         console.error(e);

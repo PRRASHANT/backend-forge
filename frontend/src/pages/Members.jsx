@@ -23,7 +23,7 @@ export default function Members() {
     try {
       setLoading(true);
       const res = await apiClient.get(`/projects/${project._id}/members`);
-      setMembers(res.data.members || []);
+      setMembers(res.data.data.members || []);
     } catch (err) {
       toast.error('Failed to load members');
     } finally {
@@ -46,7 +46,7 @@ export default function Members() {
       setRole('viewer');
       fetchMembers();
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to add member');
+      toast.error(err.response?.data?.error?.message || 'Failed to add member');
     } finally {
       setInviting(false);
     }

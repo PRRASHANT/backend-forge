@@ -27,7 +27,7 @@ export default function Projects() {
     try {
       setLoading(true);
       const res = await apiClient.get('/projects');
-      setProjects(res.data.projects || []);
+      setProjects(res.data.data.projects || []);
     } catch (err) {
       toast.error('Failed to load projects');
     } finally {
@@ -46,9 +46,9 @@ export default function Projects() {
       setDescription('');
       fetchProjects();
       // Navigate straight to the new project workspace
-      navigate(`/projects/${res.data.project._id}`);
+      navigate(`/projects/${res.data.data.project._id}`);
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to create project');
+      toast.error(err.response?.data?.error?.message || 'Failed to create project');
     } finally {
       setCreating(false);
     }

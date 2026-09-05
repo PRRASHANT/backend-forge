@@ -26,7 +26,7 @@ export default function Settings() {
       await apiClient.patch(`/projects/${project._id}`, { name, description });
       toast.success('Project settings updated');
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to update project');
+      toast.error(err.response?.data?.error?.message || 'Failed to update project');
     } finally {
       setSaving(false);
     }
@@ -46,7 +46,7 @@ export default function Settings() {
       toast.success('Project deleted successfully');
       navigate('/projects');
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to delete project');
+      toast.error(err.response?.data?.error?.message || 'Failed to delete project');
       setDeleting(false);
     }
   };

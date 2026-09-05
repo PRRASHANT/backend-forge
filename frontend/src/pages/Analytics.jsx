@@ -15,7 +15,7 @@ export default function Analytics() {
       try {
         setLoading(true);
         const res = await apiClient.get(`/projects/${project._id}/analytics`);
-        setAnalytics(res.data.analytics);
+        setAnalytics(res.data.data.analytics);
       } catch (err) {
         toast.error('Failed to load analytics');
       } finally {

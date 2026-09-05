@@ -25,7 +25,7 @@ export default function Collections() {
     try {
       setLoading(true);
       const res = await apiClient.get(`/projects/${project._id}/collections`);
-      setCollections(res.data.collections || []);
+      setCollections(res.data.data.collections || []);
     } catch (err) {
       toast.error('Failed to load collections');
     } finally {
@@ -44,7 +44,7 @@ export default function Collections() {
       toast.success('Collection deleted');
       fetchCollections();
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to delete collection');
+      toast.error(err.response?.data?.error?.message || 'Failed to delete collection');
     }
   };
 
@@ -59,7 +59,7 @@ export default function Collections() {
       setNewCollectionName('');
       fetchCollections();
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to create collection');
+      toast.error(err.response?.data?.error?.message || 'Failed to create collection');
     }
   };
 
@@ -72,7 +72,7 @@ export default function Collections() {
       setView('list');
       fetchCollections();
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to update collection');
+      toast.error(err.response?.data?.error?.message || 'Failed to update collection');
     }
   };
 

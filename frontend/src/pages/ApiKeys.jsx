@@ -27,7 +27,7 @@ export default function ApiKeys() {
     try {
       setLoading(true);
       const res = await apiClient.get(`/projects/${project._id}/api-keys`);
-      setApiKeys(res.data.apiKeys || []);
+      setApiKeys(res.data.data.apiKeys || []);
     } catch (err) {
       toast.error('Failed to load API keys');
     } finally {
@@ -44,11 +44,11 @@ export default function ApiKeys() {
     setCreating(true);
     try {
       const res = await apiClient.post(`/projects/${project._id}/api-keys`, { name: newKeyName });
-      setGeneratedKey(res.data.apiKey.rawKey);
+      setGeneratedKey(res.data.data.apiKey.rawKey);
       setNewKeyName('');
       fetchKeys();
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to create API key');
+      toast.error(err.response?.data?.error?.message || 'Failed to create API key');
     } finally {
       setCreating(false);
     }
@@ -61,7 +61,7 @@ export default function ApiKeys() {
       toast.success('API key revoked');
       fetchKeys();
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to revoke API key');
+      toast.error(err.response?.data?.error?.message || 'Failed to revoke API key');
     }
   };
 

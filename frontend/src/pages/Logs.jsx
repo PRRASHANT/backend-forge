@@ -17,8 +17,8 @@ export default function Logs() {
     try {
       setLoading(true);
       const res = await apiClient.get(`/projects/${project._id}/logs?page=${pageNum}&limit=50`);
-      setLogs(res.data.logs || []);
-      setHasMore(res.data.pagination?.page < res.data.pagination?.pages);
+      setLogs(res.data.data.logs || []);
+      setHasMore(res.data.data.pagination?.page < res.data.data.pagination?.pages);
       setPage(pageNum);
     } catch (err) {
       toast.error('Failed to load logs');
