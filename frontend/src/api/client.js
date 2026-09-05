@@ -15,7 +15,7 @@ apiClient.interceptors.request.use(
   (config) => {
     // In this MVP, we use localStorage for the management JWT token.
     const token = localStorage.getItem('bf_token');
-    if (token) {
+    if (token && token !== 'undefined') {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;

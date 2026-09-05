@@ -2,7 +2,8 @@ import React from 'react';
 import { Outlet, Navigate } from 'react-router-dom';
 
 export default function AuthLayout() {
-  const token = localStorage.getItem('bf_token');
+  let token = localStorage.getItem('bf_token');
+  if (token === 'undefined') token = null;
 
   // If already logged in, redirect to dashboard
   if (token) {

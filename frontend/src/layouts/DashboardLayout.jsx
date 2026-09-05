@@ -3,8 +3,18 @@ import { Outlet, Navigate, Link, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, Folder, LogOut } from 'lucide-react';
 
 export default function DashboardLayout() {
-  const token = localStorage.getItem('bf_token');
-  const user = JSON.parse(localStorage.getItem('bf_user') || 'null');
+  let token = localStorage.getItem('bf_token');
+  if (token === 'undefined') token = null;
+
+  let user = null;
+  try {
+    const userStr = localStorage.getItem('bf_user');
+    if (userStr && userStr !== 'undefined') {
+      user = JSON.parse(userStr);
+    }
+  } catch (e) {
+    console.error('Failed to parse user from localStorage', e);
+  }
   const navigate = useNavigate();
 
   // If not logged in, redirect to login

@@ -18,8 +18,8 @@ export default function Login() {
     try {
       const response = await apiClient.post('/auth/login', { email, password });
       
-      localStorage.setItem('bf_token', response.data.token);
-      localStorage.setItem('bf_user', JSON.stringify(response.data.user));
+      localStorage.setItem('bf_token', response.data.data.token);
+      localStorage.setItem('bf_user', JSON.stringify(response.data.data.user));
       
       toast.success('Welcome back!');
       navigate('/dashboard');
