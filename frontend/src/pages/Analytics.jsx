@@ -44,15 +44,21 @@ export default function Analytics() {
   }
 
   // Transform data for charts
-  const methodData = analytics.requestsByMethod?.map(m => ({
-    name: m._id,
-    count: m.count
-  })) || [];
+  const isObjectMap = value => value && typeof value === 'object' && !Array.isArray(value);
 
-  const collectionData = analytics.requestsByCollection?.map(c => ({
-    name: c._id || 'unknown',
-    count: c.count
-  })) || [];
+  const methodData = isObjectMap(analytics.requestsByMethod) 
+    ? Object.entries(analytics.requestsByMethod).map(([key, val]) => ({
+        name: key,
+        count: val
+      }))
+    : [];
+
+  const collectionData = isObjectMap(analytics.requestsByCollection)
+    ? Object.entries(analytics.requestsByCollection).map(([key, val]) => ({
+        name: key || 'unknown',
+        count: val
+      }))
+    : [];
 
   const COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ef4444'];
 
