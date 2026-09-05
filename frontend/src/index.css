@@ -56,6 +56,15 @@
   body {
     @apply bg-background text-foreground;
   }
+  /* Apply dark color-scheme to the root dark wrapper so browsers render
+     native UI controls (select, scrollbars, etc.) in dark mode */
+  .dark {
+    color-scheme: dark;
+  }
+  /* Propagate color-scheme to native select elements */
+  select {
+    color-scheme: inherit;
+  }
 }
 
 /* Custom scrollbar for a professional developer feel */
