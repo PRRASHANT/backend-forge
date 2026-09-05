@@ -61,10 +61,6 @@
   .dark {
     color-scheme: dark;
   }
-  /* Propagate color-scheme to native select elements */
-  select {
-    color-scheme: inherit;
-  }
 }
 
 /* Custom scrollbar for a professional developer feel */

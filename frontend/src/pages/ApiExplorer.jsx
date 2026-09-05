@@ -6,20 +6,21 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card'
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Badge } from '../components/ui/Badge';
+import { Select } from '../components/ui/Select';
 import { toast } from 'react-hot-toast';
 import { Play, Key } from 'lucide-react';
 
 export default function ApiExplorer() {
   const { project } = useOutletContext();
   const [collections, setCollections] = useState([]);
-  
+
   // Runtime API state
   const [method, setMethod] = useState('GET');
   const [selectedCollection, setSelectedCollection] = useState('');
   const [recordId, setRecordId] = useState('');
   const [apiKey, setApiKey] = useState('');
   const [reqBody, setReqBody] = useState('{\n  \n}');
-  
+
   // Response state
   const [response, setResponse] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -36,7 +37,7 @@ export default function ApiExplorer() {
         }
       })
       .catch(console.error);
-      
+
     // Try to restore an api key from memory (if user just generated one, though we didn't persist it. Let's just rely on them pasting it)
   }, [project._id]);
 
@@ -63,7 +64,7 @@ export default function ApiExplorer() {
     setLoading(true);
     setResponse(null);
     setStatus(null);
-    
+
     const startTime = performance.now();
     try {
       const res = await axios({
@@ -94,7 +95,7 @@ export default function ApiExplorer() {
       </div>
 
       <div className="flex gap-4 flex-1 min-h-0">
-        
+
         {/* LEFT PANEL - Setup */}
         <div className="w-1/3 flex flex-col gap-4 overflow-y-auto">
           <Card>
@@ -106,7 +107,7 @@ export default function ApiExplorer() {
                 <label className="text-xs font-medium text-muted-foreground flex items-center gap-1">
                   <Key className="h-3 w-3" /> X-API-Key Header
                 </label>
-                <Input 
+                <Input
                   type="password"
                   placeholder="bf_sk_..."
                   value={apiKey}
@@ -125,26 +126,27 @@ export default function ApiExplorer() {
               <div className="grid grid-cols-3 gap-2">
                 <div className="col-span-1 space-y-1">
                   <label className="text-xs font-medium text-muted-foreground">Method</label>
-                  <select 
-                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none"
+                  <Select
+                    options={[
+                      { label: 'GET', value: 'GET' },
+                      { label: 'POST', value: 'POST' },
+                      { label: 'PATCH', value: 'PATCH' },
+                      { label: 'DELETE', value: 'DELETE' }
+                    ]}
                     value={method}
                     onChange={e => setMethod(e.target.value)}
-                  >
-                    <option value="GET">GET</option>
-                    <option value="POST">POST</option>
-                    <option value="PATCH">PATCH</option>
-                    <option value="DELETE">DELETE</option>
-                  </select>
+                  />
                 </div>
                 <div className="col-span-2 space-y-1">
                   <label className="text-xs font-medium text-muted-foreground">Collection</label>
-                  <select 
-                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none"
+                  <Select
+                    options={collections.map(c => ({
+                      label: `${c.name} (/${c.slug})`,
+                      value: c.slug
+                    }))}
                     value={selectedCollection}
                     onChange={e => setSelectedCollection(e.target.value)}
-                  >
-                    {collections.map(c => <option key={c._id} value={c.slug}>{c.name} (/{c.slug})</option>)}
-                  </select>
+                  />
                 </div>
               </div>
 
@@ -153,7 +155,7 @@ export default function ApiExplorer() {
                   <label className="text-xs font-medium text-muted-foreground">
                     Record ID {method === 'GET' ? '(Optional)' : '(Required)'}
                   </label>
-                  <Input 
+                  <Input
                     placeholder="Document ID (e.g. 64b...)"
                     value={recordId}
                     onChange={e => setRecordId(e.target.value)}
@@ -165,7 +167,7 @@ export default function ApiExplorer() {
               {(method === 'POST' || method === 'PATCH') && (
                 <div className="space-y-1 flex-1 flex flex-col min-h-[150px]">
                   <label className="text-xs font-medium text-muted-foreground">Request Body (JSON)</label>
-                  <textarea 
+                  <textarea
                     className="flex-1 w-full rounded-md border border-input bg-zinc-950 px-3 py-2 text-sm font-mono focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none"
                     value={reqBody}
                     onChange={e => setReqBody(e.target.value)}
@@ -181,9 +183,9 @@ export default function ApiExplorer() {
           <Card>
             <CardContent className="p-3 flex items-center gap-3">
               <Badge variant={
-                method === 'GET' ? 'success' : 
-                method === 'POST' ? 'warning' : 
-                method === 'PATCH' ? 'secondary' : 'destructive'
+                method === 'GET' ? 'success' :
+                  method === 'POST' ? 'warning' :
+                    method === 'PATCH' ? 'secondary' : 'destructive'
               } className="text-xs px-2 rounded-sm shrink-0">
                 {method}
               </Badge>
