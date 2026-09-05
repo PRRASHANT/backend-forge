@@ -43,7 +43,7 @@ export default function ProjectOverview() {
           </CardHeader>
           <CardContent>
             <div className="text-sm font-mono truncate bg-zinc-900 p-2 rounded-md">
-              {import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api'}/v1/{project._id}
+              {import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/v1/{project._id}
             </div>
             <p className="text-xs text-muted-foreground mt-2">Base endpoint for data access</p>
           </CardContent>

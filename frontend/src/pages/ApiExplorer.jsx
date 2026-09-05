@@ -40,7 +40,7 @@ export default function ApiExplorer() {
     // Try to restore an api key from memory (if user just generated one, though we didn't persist it. Let's just rely on them pasting it)
   }, [project._id]);
 
-  const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+  const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
   const runtimeUrl = `${baseUrl.replace('/api', '')}/api/v1/${project._id}/${selectedCollection}`;
   const fullUrl = recordId ? `${runtimeUrl}/${recordId}` : runtimeUrl;
 
