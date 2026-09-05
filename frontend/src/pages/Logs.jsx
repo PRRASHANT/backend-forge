@@ -87,8 +87,8 @@ export default function Logs() {
                         </Badge>
                       </td>
                       <td className="px-6 py-3 font-mono text-muted-foreground text-xs">{log.path}</td>
-                      <td className={`px-6 py-3 font-mono text-xs ${getStatusColor(log.status)}`}>
-                        {log.status}
+                      <td className={`px-6 py-3 font-mono text-xs ${getStatusColor(log.statusCode)}`}>
+                        {log.statusCode}
                       </td>
                       <td className="px-6 py-3 text-muted-foreground text-xs font-mono">{log.duration}ms</td>
                       <td className="px-6 py-3 text-muted-foreground text-xs">
