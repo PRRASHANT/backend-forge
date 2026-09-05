@@ -3,7 +3,7 @@ import { useOutletContext, Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Database, Key, Activity } from 'lucide-react';
-import apiClient from '../api/client';
+import apiClient, { BASE_URL } from '../api/client';
 
 export default function ProjectOverview() {
   const { project, role } = useOutletContext();
@@ -43,7 +43,7 @@ export default function ProjectOverview() {
           </CardHeader>
           <CardContent>
             <div className="text-sm font-mono truncate bg-zinc-900 p-2 rounded-md">
-              {import.meta.env.VITE_API_URL || 'http://localhost:5000/api'}/v1/{project._id}
+              {BASE_URL}/v1/{project._id}
             </div>
             <p className="text-xs text-muted-foreground mt-2">Base endpoint for data access</p>
           </CardContent>
