@@ -85,9 +85,7 @@ export default function Analytics() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {analytics.totalRequests > 0 
-                ? Math.round((analytics.successfulRequests / analytics.totalRequests) * 100) 
-                : 0}%
+              {Math.round(analytics.successRate || 0)}%
             </div>
           </CardContent>
         </Card>
@@ -97,7 +95,7 @@ export default function Analytics() {
             <CardTitle className="text-sm font-medium text-muted-foreground">Avg Response Time</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{Math.round(analytics.averageDuration || 0)}ms</div>
+            <div className="text-2xl font-bold">{Math.round(analytics.averageResponseTime || 0)}ms</div>
           </CardContent>
         </Card>
 
@@ -108,7 +106,7 @@ export default function Analytics() {
           <CardContent>
             <div className="text-2xl font-bold">
               {analytics.totalRequests > 0 
-                ? Math.round((analytics.errorRequests / analytics.totalRequests) * 100) 
+                ? Math.round((analytics.failedRequests / analytics.totalRequests) * 100) 
                 : 0}%
             </div>
           </CardContent>
