@@ -1,5 +1,5 @@
 import React from 'react';
-import { Outlet, Navigate, Link, useNavigate } from 'react-router-dom';
+import { Outlet, Navigate, Link, useNavigate, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Folder, LogOut } from 'lucide-react';
 
 export default function DashboardLayout() {
@@ -16,6 +16,7 @@ export default function DashboardLayout() {
     console.error('Failed to parse user from localStorage', e);
   }
   const navigate = useNavigate();
+  const location = useLocation();
 
   // If not logged in, redirect to login
   if (!token) {
@@ -31,17 +32,31 @@ export default function DashboardLayout() {
   return (
     <div className="flex min-h-screen">
       {/* Sidebar Navigation */}
-      <aside className="w-64 border-r bg-zinc-950/50 p-4 flex flex-col">
-        <div className="mb-8">
-          <h2 className="text-xl font-bold tracking-tight">BACKEND FORGE</h2>
+      <aside className="w-64 border-r border-zinc-800/60 bg-zinc-950 p-4 flex flex-col">
+        <div className="mb-8 px-1 mt-2">
+          <h2 className="text-lg font-bold tracking-tight text-zinc-100">BACKEND FORGE</h2>
         </div>
 
-        <nav className="flex-1 space-y-2">
-          <Link to="/dashboard" className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-accent text-accent-foreground">
+        <nav className="flex-1 flex flex-col gap-1">
+          <Link 
+            to="/dashboard" 
+            className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-all duration-200 ${
+              location.pathname === '/dashboard'
+                ? 'bg-zinc-800/50 text-white font-medium border border-zinc-700/50 shadow-sm' 
+                : 'text-zinc-400 hover:bg-zinc-800/30 hover:text-zinc-200 border border-transparent'
+            }`}
+          >
             <LayoutDashboard className="h-4 w-4" />
             Dashboard
           </Link>
-          <Link to="/projects" className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-accent text-muted-foreground">
+          <Link 
+            to="/projects" 
+            className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-all duration-200 ${
+              location.pathname.startsWith('/projects')
+                ? 'bg-zinc-800/50 text-white font-medium border border-zinc-700/50 shadow-sm' 
+                : 'text-zinc-400 hover:bg-zinc-800/30 hover:text-zinc-200 border border-transparent'
+            }`}
+          >
             <Folder className="h-4 w-4" />
             Projects
           </Link>
@@ -53,7 +68,7 @@ export default function DashboardLayout() {
           </div>
           <button 
             onClick={handleLogout}
-            className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-destructive/10 text-destructive mt-1"
+            className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm font-medium hover:bg-destructive/10 text-destructive mt-1 transition-colors"
           >
             <LogOut className="h-4 w-4" />
             Logout
