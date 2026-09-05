@@ -10,7 +10,7 @@ const FIELD_TYPES = [
   'email', 'url', 'enum', 'array', 'object', 'reference', 'decimal'
 ];
 
-export default function SchemaBuilder({ onSave, initialFields = [], collections = [] }) {
+export default function SchemaBuilder({ onSave, initialFields = [], collections = [], readOnly = false }) {
   const [fields, setFields] = useState(
     initialFields.map(f => ({ ...f, _id: f._id || Math.random().toString(36).substr(2, 9) }))
   );
@@ -62,6 +62,11 @@ export default function SchemaBuilder({ onSave, initialFields = [], collections 
 
   return (
     <div className="space-y-4">
+      {readOnly && (
+        <div className="bg-blue-500/10 text-blue-500 text-sm p-3 rounded-md border border-blue-500/20">
+          Viewer access — schema is read-only.
+        </div>
+      )}
       {fields.length === 0 ? (
         <div className="text-center py-8 text-muted-foreground bg-zinc-950/50 rounded-lg border border-dashed border-zinc-800">
           No fields defined yet.
@@ -76,12 +81,14 @@ export default function SchemaBuilder({ onSave, initialFields = [], collections 
                   placeholder="Field Name" 
                   value={field.name}
                   onChange={(e) => updateField(field._id, 'name', e.target.value)}
+                  disabled={readOnly}
                 />
                 
                 <select 
-                  className="flex h-9 w-1/4 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  className="flex h-9 w-1/4 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:opacity-50"
                   value={field.type}
                   onChange={(e) => updateField(field._id, 'type', e.target.value)}
+                  disabled={readOnly}
                 >
                   {FIELD_TYPES.map(t => (
                     <option key={t} value={t}>{t}</option>
@@ -92,9 +99,10 @@ export default function SchemaBuilder({ onSave, initialFields = [], collections 
                   <label className="text-sm flex items-center gap-1 cursor-pointer">
                     <input 
                       type="checkbox" 
-                      className="rounded border-zinc-700 bg-zinc-900"
+                      className="rounded border-zinc-700 bg-zinc-900 disabled:opacity-50"
                       checked={field.required || false}
                       onChange={(e) => updateField(field._id, 'required', e.target.checked)}
+                      disabled={readOnly}
                     />
                     Required
                   </label>
@@ -105,9 +113,11 @@ export default function SchemaBuilder({ onSave, initialFields = [], collections 
                   <Button variant="ghost" size="icon" onClick={() => setExpandedFieldId(expandedFieldId === field._id ? null : field._id)}>
                     <Settings2 className="h-4 w-4" />
                   </Button>
-                  <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive" onClick={() => removeField(field._id)}>
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+                  {!readOnly && (
+                    <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive" onClick={() => removeField(field._id)}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
                 </div>
               </div>
 
@@ -122,6 +132,7 @@ export default function SchemaBuilder({ onSave, initialFields = [], collections 
                       className="h-8"
                       value={field.default || ''}
                       onChange={(e) => updateField(field._id, 'default', e.target.value)}
+                      disabled={readOnly}
                     />
                   </div>
 
@@ -134,6 +145,7 @@ export default function SchemaBuilder({ onSave, initialFields = [], collections 
                         className="h-8"
                         value={Array.isArray(field.enumValues) ? field.enumValues.join(', ') : (field.enumValues || '')}
                         onChange={(e) => updateField(field._id, 'enumValues', e.target.value)}
+                        disabled={readOnly}
                       />
                     </div>
                   )}
@@ -143,9 +155,10 @@ export default function SchemaBuilder({ onSave, initialFields = [], collections 
                     <div className="space-y-1">
                       <label className="text-xs font-medium text-muted-foreground">Reference Collection Slug</label>
                       <select 
-                        className="flex h-8 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                        className="flex h-8 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:opacity-50"
                         value={field.refCollection || ''}
                         onChange={(e) => updateField(field._id, 'refCollection', e.target.value)}
+                        disabled={readOnly}
                       >
                         <option value="">Select a collection...</option>
                         {collections.map(c => (
@@ -160,9 +173,10 @@ export default function SchemaBuilder({ onSave, initialFields = [], collections 
                     <div className="space-y-1">
                       <label className="text-xs font-medium text-muted-foreground">Items Type</label>
                       <select 
-                        className="flex h-8 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                        className="flex h-8 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:opacity-50"
                         value={field.arrayType || 'string'}
                         onChange={(e) => updateField(field._id, 'arrayType', e.target.value)}
+                        disabled={readOnly}
                       >
                         {FIELD_TYPES.filter(t => t !== 'array').map(t => (
                           <option key={t} value={t}>{t}</option>
@@ -180,6 +194,7 @@ export default function SchemaBuilder({ onSave, initialFields = [], collections 
                           type="number" className="h-8"
                           value={field.min ?? ''}
                           onChange={(e) => updateField(field._id, 'min', e.target.value ? Number(e.target.value) : undefined)}
+                          disabled={readOnly}
                         />
                       </div>
                       <div className="space-y-1">
@@ -188,6 +203,7 @@ export default function SchemaBuilder({ onSave, initialFields = [], collections 
                           type="number" className="h-8"
                           value={field.max ?? ''}
                           onChange={(e) => updateField(field._id, 'max', e.target.value ? Number(e.target.value) : undefined)}
+                          disabled={readOnly}
                         />
                       </div>
                     </>
@@ -201,12 +217,16 @@ export default function SchemaBuilder({ onSave, initialFields = [], collections 
       )}
 
       <div className="flex items-center justify-between pt-4">
-        <Button variant="outline" onClick={addField} type="button" className="gap-2">
-          <Plus className="h-4 w-4" /> Add Field
-        </Button>
-        <Button onClick={handleSave}>
-          Save Schema
-        </Button>
+        {!readOnly && (
+          <>
+            <Button variant="outline" onClick={addField} type="button" className="gap-2">
+              <Plus className="h-4 w-4" /> Add Field
+            </Button>
+            <Button onClick={handleSave}>
+              Save Schema
+            </Button>
+          </>
+        )}
       </div>
     </div>
   );

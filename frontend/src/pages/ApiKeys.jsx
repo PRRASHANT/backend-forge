@@ -24,6 +24,10 @@ export default function ApiKeys() {
   const [copied, setCopied] = useState(false);
 
   const fetchKeys = async () => {
+    if (role === 'viewer') {
+      setLoading(false);
+      return;
+    }
     try {
       setLoading(true);
       const res = await apiClient.get(`/projects/${project._id}/api-keys`);
@@ -93,62 +97,68 @@ export default function ApiKeys() {
 
       <Card>
         <CardContent className="p-0">
-          <div className="w-full overflow-x-auto">
-            <table className="w-full text-sm text-left">
-              <thead className="text-xs text-muted-foreground bg-zinc-950/50 border-b border-zinc-800">
-                <tr>
-                  <th className="px-6 py-4 font-medium">Name</th>
-                  <th className="px-6 py-4 font-medium">Prefix</th>
-                  <th className="px-6 py-4 font-medium">Status</th>
-                  <th className="px-6 py-4 font-medium">Created</th>
-                  {role !== 'viewer' && role !== 'developer' && <th className="px-6 py-4 font-medium text-right">Actions</th>}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-zinc-800">
-                {loading ? (
+          {role === 'viewer' ? (
+            <div className="py-12 text-center text-muted-foreground">
+              API key management is available to project owners.
+            </div>
+          ) : (
+            <div className="w-full overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead className="text-xs text-muted-foreground bg-zinc-950/50 border-b border-zinc-800">
                   <tr>
-                    <td colSpan={5} className="px-6 py-8 text-center text-muted-foreground">Loading keys...</td>
+                    <th className="px-6 py-4 font-medium">Name</th>
+                    <th className="px-6 py-4 font-medium">Prefix</th>
+                    <th className="px-6 py-4 font-medium">Status</th>
+                    <th className="px-6 py-4 font-medium">Created</th>
+                    {role !== 'developer' && <th className="px-6 py-4 font-medium text-right">Actions</th>}
                   </tr>
-                ) : apiKeys.length === 0 ? (
-                  <tr>
-                    <td colSpan={5} className="px-6 py-8 text-center text-muted-foreground">
-                      No API keys generated yet.
-                    </td>
-                  </tr>
-                ) : (
-                  apiKeys.map((k) => (
-                    <tr key={k._id} className="hover:bg-zinc-900/50 transition-colors">
-                      <td className="px-6 py-4 font-medium">{k.name}</td>
-                      <td className="px-6 py-4 font-mono text-muted-foreground">{k.prefix}...</td>
-                      <td className="px-6 py-4">
-                        {k.isActive ? (
-                          <Badge variant="success">Active</Badge>
-                        ) : (
-                          <Badge variant="destructive">Revoked</Badge>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 text-muted-foreground">
-                        {new Date(k.createdAt).toLocaleDateString()}
-                      </td>
-                      {role !== 'viewer' && role !== 'developer' && (
-                        <td className="px-6 py-4 text-right">
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                            onClick={() => handleRevoke(k._id)}
-                            disabled={!k.isActive}
-                          >
-                            Revoke
-                          </Button>
-                        </td>
-                      )}
+                </thead>
+                <tbody className="divide-y divide-zinc-800">
+                  {loading ? (
+                    <tr>
+                      <td colSpan={5} className="px-6 py-8 text-center text-muted-foreground">Loading keys...</td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+                  ) : apiKeys.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="px-6 py-8 text-center text-muted-foreground">
+                        No API keys generated yet.
+                      </td>
+                    </tr>
+                  ) : (
+                    apiKeys.map((k) => (
+                      <tr key={k._id} className="hover:bg-zinc-900/50 transition-colors">
+                        <td className="px-6 py-4 font-medium">{k.name}</td>
+                        <td className="px-6 py-4 font-mono text-muted-foreground">{k.prefix}...</td>
+                        <td className="px-6 py-4">
+                          {k.isActive ? (
+                            <Badge variant="success">Active</Badge>
+                          ) : (
+                            <Badge variant="destructive">Revoked</Badge>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 text-muted-foreground">
+                          {new Date(k.createdAt).toLocaleDateString()}
+                        </td>
+                        {role !== 'developer' && (
+                          <td className="px-6 py-4 text-right">
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                              onClick={() => handleRevoke(k._id)}
+                              disabled={!k.isActive}
+                            >
+                              Revoke
+                            </Button>
+                          </td>
+                        )}
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
         </CardContent>
       </Card>
 

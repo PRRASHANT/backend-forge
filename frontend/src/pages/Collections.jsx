@@ -128,6 +128,7 @@ export default function Collections() {
               onSave={handleUpdate} 
               initialFields={selectedCollection.fields} 
               collections={collections}
+              readOnly={role === 'viewer'}
             />
           </CardContent>
         </Card>
