@@ -118,8 +118,14 @@ export default function Collections() {
             <ChevronLeft className="h-5 w-5" />
           </Button>
           <div>
-            <h2 className="text-2xl font-bold tracking-tight">Edit Collection: {selectedCollection.name}</h2>
-            <p className="text-muted-foreground text-sm">Update the schema fields. Existing data validation will adapt.</p>
+            <h2 className="text-2xl font-bold tracking-tight">
+              {role === 'viewer' ? 'View' : 'Edit'} Collection: {selectedCollection.name}
+            </h2>
+            <p className="text-muted-foreground text-sm">
+              {role === 'viewer'
+                ? 'View the collection schema and field definitions.'
+                : 'Update the schema fields. Existing data validation will adapt.'}
+            </p>
           </div>
         </div>
         <Card>
