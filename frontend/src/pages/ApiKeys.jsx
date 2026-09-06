@@ -24,7 +24,7 @@ export default function ApiKeys() {
   const [copied, setCopied] = useState(false);
 
   const fetchKeys = async () => {
-    if (role === 'viewer') {
+    if (role !== 'owner' && role !== 'admin') {
       setLoading(false);
       return;
     }
@@ -97,9 +97,10 @@ export default function ApiKeys() {
 
       <Card>
         <CardContent className="p-0">
-          {role === 'viewer' ? (
-            <div className="py-12 text-center text-muted-foreground">
-              API key management is available to project owners.
+          {role !== 'owner' && role !== 'admin' ? (
+            <div className="py-12 text-center text-muted-foreground flex flex-col items-center justify-center gap-3">
+              <Key className="h-8 w-8 text-zinc-700 mx-auto" />
+              <p>API key management is restricted to project members with higher permissions.</p>
             </div>
           ) : (
             <div className="w-full overflow-x-auto">

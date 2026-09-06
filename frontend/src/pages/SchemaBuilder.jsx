@@ -63,8 +63,9 @@ export default function SchemaBuilder({ onSave, initialFields = [], collections 
   return (
     <div className="space-y-4">
       {readOnly && (
-        <div className="bg-blue-500/10 text-blue-500 text-sm p-3 rounded-md border border-blue-500/20">
-          Viewer access — schema is read-only.
+        <div className="flex items-center gap-2 text-xs font-medium text-zinc-500 uppercase tracking-wider mb-2">
+          <div className="w-1.5 h-1.5 rounded-full bg-zinc-600" />
+          Read-only access
         </div>
       )}
       {fields.length === 0 ? (
