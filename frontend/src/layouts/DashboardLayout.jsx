@@ -34,10 +34,10 @@ export default function DashboardLayout() {
       {/* Sidebar Navigation */}
       <aside className="w-64 border-r border-zinc-800/60 bg-zinc-950 p-4 flex flex-col">
         <div className="mb-10 px-2 mt-2 flex flex-col gap-1">
-          <div className="flex items-center gap-3">
+          <Link to="/dashboard" className="flex items-center gap-3">
             <img src="/backend-forge-logo.svg" alt="Backend Forge" className="w-7 h-7" />
             <h2 className="text-base font-extrabold tracking-tight text-zinc-100">BACKEND FORGE</h2>
-          </div>
+          </Link>
           <p className="text-[10px] text-zinc-500 font-medium uppercase tracking-widest pl-10">Build. Deploy. Scale.</p>
         </div>
 

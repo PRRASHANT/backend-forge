@@ -3,7 +3,13 @@ import { Link, useLocation } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
 import { Book, Code, Key, Database, Activity, BarChart3, Users, AlertTriangle, ArrowRight, Menu, X, Terminal } from 'lucide-react';
 
+// Dummy Blocks icon since we missed importing it initially
+const Blocks = ({ className }) => (
+  <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg>
+);
+
 export default function Docs() {
+  const logoPath = (localStorage.getItem('bf_token') && localStorage.getItem('bf_token') !== 'undefined') ? '/dashboard' : '/';
   const [activeSection, setActiveSection] = useState('getting-started');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
@@ -51,10 +57,6 @@ export default function Docs() {
     return () => observer.disconnect();
   }, [sections]);
 
-  // Dummy Blocks icon since we missed importing it initially
-  const Blocks = ({ className }) => (
-    <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg>
-  );
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 selection:bg-indigo-500/30 font-sans">
@@ -66,7 +68,7 @@ export default function Docs() {
             <button className="md:hidden text-zinc-400 hover:text-white" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
               {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
-            <Link to="/" className="flex items-center gap-3">
+            <Link to={logoPath} className="flex items-center gap-3">
               <img src="/backend-forge-logo.svg" alt="Backend Forge" className="w-7 h-7" />
               <span className="font-extrabold tracking-tight text-zinc-100 hidden sm:block">BACKEND FORGE</span>
             </Link>

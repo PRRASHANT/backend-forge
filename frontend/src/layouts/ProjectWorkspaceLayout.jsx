@@ -50,7 +50,9 @@ export default function ProjectWorkspaceLayout() {
       {/* Workspace Sidebar */}
       <aside className="w-64 border-r border-zinc-800/60 bg-zinc-950 p-4 flex flex-col overflow-y-auto">
         <div className="mb-10 flex items-center justify-between px-2 mt-2">
-          <img src="/backend-forge-logo.svg" alt="Backend Forge" className="w-7 h-7" />
+          <Link to="/dashboard" className="flex items-center">
+            <img src="/backend-forge-logo.svg" alt="Backend Forge" className="w-7 h-7 hover:opacity-80 transition-opacity" />
+          </Link>
           <Link to="/projects" className="flex items-center text-[11px] font-medium text-zinc-500 hover:text-zinc-300 transition-colors uppercase tracking-wider">
             <ArrowLeft className="mr-1 h-3 w-3" /> Projects
           </Link>

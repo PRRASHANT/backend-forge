@@ -4,6 +4,8 @@ import { Button } from '../components/ui/Button';
 import { ArrowRight, Database, Code, Key, Activity, BarChart3, Users, Zap, Shield, Blocks, Terminal } from 'lucide-react';
 
 export default function Landing() {
+  const logoPath = (localStorage.getItem('bf_token') && localStorage.getItem('bf_token') !== 'undefined') ? '/dashboard' : '/';
+
   const scrollToSection = (id) => {
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: 'smooth' });
@@ -16,7 +18,7 @@ export default function Landing() {
       <nav className="sticky top-0 z-50 border-b border-zinc-800/60 bg-zinc-950/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-8">
-            <Link to="/" className="flex items-center gap-3">
+            <Link to={logoPath} className="flex items-center gap-3">
               <img src="/backend-forge-logo.svg" alt="Backend Forge" className="w-7 h-7" />
               <span className="font-extrabold tracking-tight text-zinc-100">BACKEND FORGE</span>
             </Link>
@@ -436,13 +438,13 @@ export default function Landing() {
       <footer className="border-t border-zinc-900 bg-zinc-950 py-12">
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-8">
-            <div className="flex items-center gap-3">
+            <Link to={logoPath} className="flex items-center gap-3 hover:opacity-80 transition-opacity">
               <img src="/backend-forge-logo.svg" alt="Backend Forge" className="w-6 h-6 grayscale opacity-50" />
               <div>
                 <div className="font-bold text-zinc-300 text-sm tracking-tight">BACKEND FORGE</div>
                 <div className="text-[10px] text-zinc-600 font-medium uppercase tracking-widest mt-0.5">Build. Deploy. Scale.</div>
               </div>
-            </div>
+            </Link>
             <div className="flex gap-6 text-sm text-zinc-500 font-medium">
               <button onClick={() => scrollToSection('features')} className="hover:text-zinc-300 transition-colors">Features</button>
               <button onClick={() => scrollToSection('how-it-works')} className="hover:text-zinc-300 transition-colors">How It Works</button>
