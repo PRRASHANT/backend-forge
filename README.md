@@ -2,213 +2,168 @@
 
 **Build. Deploy. Scale.**
 
-A schema-driven Backend-as-a-Service (BaaS) platform that allows developers to define data models through a management API and automatically exposes secured RESTful CRUD APIs for those models.
+A mini Backend-as-a-Service (BaaS) platform that lets developers define schemas and expose secure runtime CRUD APIs without repeatedly writing boilerplate backend code.
+
+Backend Forge is a hosted BaaS-style platform—not simply a CRUD code generator. You define your data models via a Management API/Dashboard, and the platform instantly provides secured, tenant-isolated RESTful CRUD APIs for your application to consume at runtime.
 
 ---
 
-## Problem Statement
+## 1. Live Demo
+Frontend URL: [https://backend-forge-sigma.vercel.app](https://backend-forge-sigma.vercel.app)
+*(Note: As a free-tier deployment, the backend may take 30-50 seconds to spin up from a cold start.)*
 
-Building CRUD backend APIs is repetitive. Every new project requires:
-- Database models
-- Validation logic
-- Controller/route boilerplate
-- Authentication middleware
-- Error handling
+## 2. What is Backend Forge?
+Building CRUD backend APIs is repetitive. Every new project requires boilerplate database models, validation logic, route controllers, authentication middleware, and error handling. 
 
-Backend Forge eliminates this by letting developers define schemas through a management API. The platform then dynamically generates and serves CRUD APIs — no code writing required.
+Backend Forge eliminates this friction. Developers use the visual dashboard to define schemas and manage their backend configuration. The platform then dynamically resolves user-defined schemas and serves CRUD operations through a generic runtime API on the fly. 
 
-## Features
+## 3. Key Features
+- Authentication & RBAC: Secure JWT-based dashboard authentication with Owner, Admin, Developer, and Viewer roles.
+- Project Management & Multi-Tenant Isolation: Manage multiple backend projects. Each project's data collections are physically isolated in MongoDB (e.g. `data_{projectId}_{collectionId}`).
+- Dynamic Collections & Schemas: Support for 12 data types (string, number, integer, boolean, date, email, url, enum, array, object, reference, decimal) with strict constraints (min/max length, required, enum values, etc.).
+- Dynamic Runtime CRUD APIs: Dynamically exposes runtime CRUD endpoints for any user-defined collection.
+- Project API Keys: Cryptographic runtime API keys (hashed via bcrypt) with one-time display and real-time revocation capabilities.
+- Runtime Validation: Strict schema enforcement drops unknown fields and rejects invalid data structures before querying the database.
+- API Explorer: Built-in dashboard tool to test and inspect exposed runtime APIs.
+- Request Logs & Analytics: Asynchronous activity logging and real metrics computed directly from actual API requests.
+- Rate Limiting: Configurable rate limiters for authentication, general management, and runtime APIs (enforced per API key).
 
-- **User Authentication** — Registration, login, JWT-based auth with bcrypt password hashing
-- **Project Management** — Create and manage multiple backend projects
-- **Dynamic Collections** — Define data models with 12 supported field types
-- **Dynamic Schema Engine** — Converts schema definitions to runtime-validated Mongoose models
-- **Generic CRUD Engine** — Automatic REST API generation for any user-defined collection
-- **Runtime Data API** — Separate API authenticated via project API keys (not dashboard JWT)
-- **12 Field Types** — string, number, integer, boolean, date, email, url, enum, array, object, reference, decimal
-- **Field Validation** — required, min/max, minLength/maxLength, enum values, email/URL format, array constraints
-- **RBAC** — Owner, Admin, Developer, Viewer roles with enforced permission matrix
-- **API Key Management** — Cryptographic key generation, bcrypt hashing, one-time display, revocation
-- **Multi-Tenant Isolation** — Physical MongoDB collection separation per project/collection
-- **Request Logging** — Async runtime API activity logging with pagination
-- **Analytics** — Real metrics computed from actual request data
-- **Rate Limiting** — Configurable limiters for auth, general, and runtime APIs
-- **Security** — Helmet headers, CORS, payload size limits, centralized error handling, no secret leakage
+## 4. How It Works
+1. **Developer** creates a Backend Forge account.
+2. Creates a **Project** (e.g., "E-Commerce App").
+3. Defines a **Collection** (e.g., "products") with a custom schema.
+4. Generates an **API key** for the project.
+5. Uses the **Runtime REST API** from their client application using the API key.
+6. Receives validated **JSON responses** backed by MongoDB.
 
-## Technology Stack
+## 5. Architecture
+Backend Forge is separated into two distinct layers for security and scalability:
 
-### Backend
-- **Node.js** with **Express**
-- **MongoDB** with **Mongoose**
-- **JWT** for Management Authentication
-- **bcrypt** for hashing (Passwords & API Keys)
-- **Helmet**, **express-rate-limit**, **cors** for security
+- Management API (Express): Handles dashboard operations, JWT auth, schema metadata definition, and analytics.
+- Runtime Data API (Express): Dynamically resolves user-defined schemas and serves CRUD operations to end-user applications using `X-API-Key` authentication.
+- Schema Engine: Dynamically compiles user schemas into Mongoose models and caches them in a bounded LRU memory cache for fast runtime resolution.
+- Frontend (React/Vite): A polished dashboard built with Tailwind CSS, Axios, and Recharts.
 
-### Frontend
-- **React.js** with **Vite**
-- **Tailwind CSS** for styling
-- **Axios** for API communication
-- **Lucide React** for iconography
-- **Recharts** for runtime analytics
-
----
-
-## Architecture
-
-```
-External App → HTTP + X-API-Key → Runtime API → API Key Auth → Project Resolution
-    → Collection Resolution → Dynamic Schema Engine → Generic CRUD → MongoDB → JSON Response
+```text
+External Client App
+       │
+       ▼ (HTTP + X-API-Key)
+┌──────────────────────┐      ┌─────────────────────────┐
+│  Runtime Data API    │◄────►│  Dynamic Schema Engine  │
+└─────────┬────────────┘      └─────────────────────────┘
+          │
+          ▼
+┌──────────────────────┐      ┌─────────────────────────┐
+│ Generic CRUD Engine  │◄────►│     MongoDB (Atlas)     │
+└──────────────────────┘      └─────────────────────────┘
 ```
 
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for detailed architecture decisions.
+## 6. Management API vs Runtime Data API
+- Management API: Used by developers to configure their backend (create projects, build schemas, manage members). Secured via standard JWT Bearer tokens.
+- Runtime Data API: Used by the client applications (e.g., a mobile app or frontend website) to perform CRUD operations on the data. Secured via Project API Keys (`X-API-Key` header).
 
-## Prerequisites
+## 7. Dynamic Schema & Runtime API Example
 
+Example Schema Definition (`products`):
+- `name`: string (required)
+- `price`: number (required, min 0)
+- `description`: string (optional)
+- `inStock`: boolean (required)
+
+Dynamically Exposed Runtime Endpoints:
+- `POST /api/v1/:projectId/products` — Create a product
+- `GET /api/v1/:projectId/products` — List products (with pagination, sort, and strict filter whitelisting)
+- `GET /api/v1/:projectId/products/:id` — Get a specific product
+- `PATCH /api/v1/:projectId/products/:id` — Update a product
+- `DELETE /api/v1/:projectId/products/:id` — Delete a product
+
+## 8. Security
+Backend Forge implements strict security boundaries:
+- Authentication: JWT for dashboard, `bcrypt` for password hashing (cost factor 12).
+- API Keys: Cryptographically generated. Only bcrypt hashes and a 12-char lookup prefix are stored.
+- Key Revocation: Real-time prevention of revoked key usage.
+- Tenant Isolation: Strict MongoDB collection separation per project/schema prevents cross-tenant data leaks.
+- Validation: `schemaEngine` drops unknown fields and enforces strict typings to prevent payload injection.
+- NoSQL / Query Protections: `listDocuments` whitelists sort and filter fields, strictly dropping complex NoSQL operator objects (like `$gt` or `$ne`) injected into query params.
+- CORS & Limits: Safely restricted via `CORS_ORIGIN`. Distinct rate limiters for auth, general, and runtime endpoints.
+
+## 9. Tech Stack
+- Frontend: React.js, Vite, Tailwind CSS, Axios, Lucide React, Recharts
+- Backend: Node.js, Express.js
+- Database: MongoDB (Atlas), Mongoose
+- Security: bcryptjs, jsonwebtoken, helmet, express-rate-limit, cors
+- Testing: Jest, Supertest, MongoDB Memory Server
+
+## 10. Testing & Quality
+The backend is highly tested to ensure tenant isolation and correct validation.
+- 77 Automated Tests across 5 test suites (Auth, Projects, Collections, Runtime CRUD, Logs/Analytics).
+- Production flows (login, schema creation, dynamic API resolution, API consumption) have been manually smoke-tested.
+
+## 11. Production Deployment
+- Frontend: Vercel (SPA routing configured)
+- Backend: Render (Web Service)
+- Database: MongoDB Atlas
+
+## 12. Local Development
+
+### Prerequisites
 - Node.js >= 18
-- MongoDB (local or Atlas)
-- npm
+- MongoDB (Local or Atlas)
 
-## Installation
-
+### Setup
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/PRRASHANT/backend-forge.git
 cd BackendForge
 
-# Install dependencies
+# Install backend dependencies
 npm install
 
-# Copy environment template
+# Set up environment variables
 cp .env.example .env
+# Edit .env and provide your MONGODB_URI and JWT_SECRET
 
-# Edit .env with your values (especially MONGODB_URI and JWT_SECRET)
-```
-
-## Environment Variables
-
-| Variable | Description | Default |
-|---|---|---|
-| `NODE_ENV` | Environment | `development` |
-| `PORT` | Server port | `5000` |
-| `MONGODB_URI` | MongoDB connection string | Required |
-| `JWT_SECRET` | JWT signing secret (min 16 chars) | Required |
-| `JWT_EXPIRES_IN` | Token expiry | `7d` |
-| `CORS_ORIGIN` | Allowed CORS origin | `http://localhost:5173` |
-| `RATE_LIMIT_WINDOW_MS` | General rate limit window | `900000` |
-| `RATE_LIMIT_MAX_REQUESTS` | General rate limit max | `100` |
-
-## Development
-
-### 1. Start the Backend
-Start the server:
-```bash
+# Start backend (defaults to http://localhost:5000)
 npm run dev
-```
 
-### 3. Start the Frontend
-In a new terminal window:
-```bash
+# In a new terminal, start frontend
 cd frontend
 npm install
 npm run dev
 ```
-The dashboard will be available at `http://localhost:5173`.
 
-## Testing
-
-```bash
-# Run all tests
-npm test
-
-# Run tests with coverage
-npm run test:coverage
-
-# Watch mode
-npm run test:watch
-```
-
-**Current status: 77 tests passing across 5 test suites.**
-
-## API Overview
-
-### Management API (JWT Auth)
-
-| Method | Endpoint | Description |
-|---|---|---|
-| POST | `/api/auth/register` | Register a new user |
-| POST | `/api/auth/login` | Login |
-| GET | `/api/auth/me` | Get current user |
-| POST | `/api/projects` | Create project |
-| GET | `/api/projects` | List user's projects |
-| GET | `/api/projects/:id` | Get project details |
-| PATCH | `/api/projects/:id` | Update project |
-| DELETE | `/api/projects/:id` | Delete project |
-| POST | `/api/projects/:id/collections` | Create collection |
-| GET | `/api/projects/:id/collections` | List collections |
-| PATCH | `/api/projects/:id/collections/:cid` | Update collection schema |
-| DELETE | `/api/projects/:id/collections/:cid` | Delete collection |
-| POST | `/api/projects/:id/api-keys` | Create API key |
-| GET | `/api/projects/:id/api-keys` | List API keys |
-| PATCH | `/api/projects/:id/api-keys/:kid/revoke` | Revoke key |
-| POST | `/api/projects/:id/members` | Add member |
-| GET | `/api/projects/:id/members` | List members |
-| GET | `/api/projects/:id/logs` | View request logs |
-| GET | `/api/projects/:id/analytics` | View analytics |
-
-### Runtime Data API (API Key Auth via `X-API-Key` header)
-
-| Method | Endpoint | Description |
-|---|---|---|
-| POST | `/api/v1/:projectId/:collection` | Create document |
-| GET | `/api/v1/:projectId/:collection` | List documents (paginated) |
-| GET | `/api/v1/:projectId/:collection/:docId` | Get document |
-| PATCH | `/api/v1/:projectId/:collection/:docId` | Update document |
-| DELETE | `/api/v1/:projectId/:collection/:docId` | Delete document |
-
-See [docs/API.md](docs/API.md) for complete API documentation.
-
-## Project Structure
-
-```
+## 13. Project Structure
+```text
 BackendForge/
 ├── src/
-│   ├── config/           # DB connection, environment config
-│   ├── middleware/        # Auth, RBAC, rate limiting, error handler
-│   ├── models/           # Mongoose models
-│   ├── routes/           # Express route definitions
-│   ├── controllers/      # Request handlers
-│   ├── services/         # Business logic (schema engine, API keys, logging)
-│   └── utils/            # Constants, error classes
-├── tests/                # Jest integration tests
-├── docs/                 # Architecture, API, security documentation
-├── server.js             # Entry point
+│   ├── config/           # DB & environment config
+│   ├── controllers/      # Route handlers
+│   ├── middleware/       # Auth, RBAC, rate limiting, error handling
+│   ├── models/           # Core Mongoose models
+│   ├── routes/           # Express routers
+│   ├── services/         # Schema engine, API key service, logging
+│   └── utils/            # Constants, errors
+├── tests/                # Jest integration test suites
+├── frontend/             # React/Vite SPA
+├── docs/                 # Additional architecture & API docs
+├── server.js             # Backend entry point
 └── package.json
 ```
 
-## Demo Flow
+## 14. Current v1.0 Scope & Limitations
+Backend Forge v1.0 is a functional release with the following intentional architectural trade-offs:
+- In-Memory Rate Limiting: `express-rate-limit` is used in-memory, which applies limits per individual Node process rather than globally.
+- In-Memory Model Cache: The dynamic Mongoose model cache (`modelCache`) is bounded per-process. In a horizontally scaled cluster, schema updates may result in temporary model staleness on peer instances until eviction.
+- REST Only: No real-time WebSocket subscriptions or file upload support in v1.0.
 
-1. Register → Login → Create project "Ecommerce"
-2. Create "products" collection with fields: name (string), price (number), inStock (boolean)
-3. Generate API key → copy the raw key (shown once)
-4. Use API key to POST/GET/PATCH/DELETE products via Runtime API
-5. View request logs and analytics through Management API
+## 15. Future Improvements
+- Distributed Caching: Implement a Redis layer for global rate limiting and cluster-wide dynamic model cache invalidation.
+- Analytics Workers: Offload analytics processing to a dedicated background worker queue.
+- E2E Testing: Expand automated browser testing (e.g., Playwright) for the frontend dashboard.
 
-## Deployment
+## 16. Author
+Prashant
 
-See [docs/DEPLOYMENT.md] for deployment instructions.
+## 17. License
 
-**Frontend:** Static build deployed to any CDN/hosting (Phase 2)
-**Backend:** Any Node.js hosting (Render, Railway, Heroku, EC2, etc.)
-**Database:** MongoDB Atlas or self-hosted
-
-## Limitations
-
-- In-memory rate limiting (single server only; Redis needed for horizontal scaling)
-- Dynamic model cache is per-process (stateless scaling requires Redis cache layer)
-- No real-time subscriptions (REST only)
-- No file upload support
-- Public client keys not yet implemented (requires security rules engine)
-
-## License
-
-ISC
+This project is licensed under the ISC License. See the `LICENSE` file for details.
