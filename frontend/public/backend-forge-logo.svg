@@ -1,0 +1,10 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Vertical core -->
+  <rect x="4" y="4" width="8" height="24" rx="2" fill="#f4f4f5"/>
+  <!-- Top modular block -->
+  <rect x="18" y="4" width="10" height="8" rx="2" fill="#f4f4f5" fill-opacity="0.5"/>
+  <!-- Bottom modular block -->
+  <rect x="18" y="16" width="10" height="12" rx="2" fill="#f4f4f5" fill-opacity="0.8"/>
+  <!-- Connection lines -->
+  <path d="M12 8H18M12 22H18" stroke="#f4f4f5" stroke-width="2.5" stroke-linecap="round"/>
+</svg>

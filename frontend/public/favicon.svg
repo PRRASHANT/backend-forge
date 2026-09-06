@@ -1,4 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <rect width="100" height="100" rx="20" fill="#09090b" stroke="#3f3f46" stroke-width="4"/>
-  <text x="50" y="52" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="46" font-weight="900" fill="#f4f4f5" text-anchor="middle" dominant-baseline="central" letter-spacing="-2">BF</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" rx="6" fill="#09090b" />
+  <!-- Vertical core -->
+  <rect x="7" y="7" width="6" height="18" rx="1.5" fill="#f4f4f5"/>
+  <!-- Top modular block -->
+  <rect x="17.5" y="7" width="7.5" height="6" rx="1.5" fill="#f4f4f5" fill-opacity="0.5"/>
+  <!-- Bottom modular block -->
+  <rect x="17.5" y="16" width="7.5" height="9" rx="1.5" fill="#f4f4f5" fill-opacity="0.8"/>
+  <!-- Connection lines -->
+  <path d="M13 10H17.5M13 20.5H17.5" stroke="#f4f4f5" stroke-width="2" stroke-linecap="round"/>
 </svg>

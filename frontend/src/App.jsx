@@ -8,6 +8,8 @@ import DashboardLayout from './layouts/DashboardLayout';
 
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Landing from './pages/Landing';
+import Docs from './pages/Docs';
 
 import Dashboard from './pages/Dashboard';
 import Projects from './pages/Projects';
@@ -33,6 +35,10 @@ function App() {
             <Route path="/register" element={<Register />} />
           </Route>
 
+          {/* Public Landing Page */}
+          <Route path="/" element={<Landing />} />
+          <Route path="/docs" element={<Docs />} />
+
           {/* Protected Dashboard Routes */}
           <Route element={<DashboardLayout />}>
             <Route path="/dashboard" element={<Dashboard />} />
@@ -50,7 +56,7 @@ function App() {
               <Route path="settings" element={<Settings />} />
             </Route>
 
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Route>
         </Routes>
       </div>

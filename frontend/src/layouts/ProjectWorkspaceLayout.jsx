@@ -49,33 +49,37 @@ export default function ProjectWorkspaceLayout() {
     <div className="flex h-full w-full">
       {/* Workspace Sidebar */}
       <aside className="w-64 border-r border-zinc-800/60 bg-zinc-950 p-4 flex flex-col overflow-y-auto">
-        <Link to="/projects" className="flex items-center text-xs font-medium text-muted-foreground hover:text-foreground mb-6 transition-colors">
-          <ArrowLeft className="mr-1 h-3 w-3" /> Back to Projects
-        </Link>
+        <div className="mb-10 flex items-center justify-between px-2 mt-2">
+          <img src="/backend-forge-logo.svg" alt="Backend Forge" className="w-7 h-7" />
+          <Link to="/projects" className="flex items-center text-[11px] font-medium text-zinc-500 hover:text-zinc-300 transition-colors uppercase tracking-wider">
+            <ArrowLeft className="mr-1 h-3 w-3" /> Projects
+          </Link>
+        </div>
         
-        <div className="mb-8 px-1">
-          <h2 className="text-base font-semibold tracking-tight text-zinc-100 truncate">{project.name}</h2>
-          <div className="flex items-center gap-2 mt-1.5">
+        <div className="mb-8 px-2">
+          <h2 className="text-base font-bold tracking-tight text-zinc-100 truncate">{project.name}</h2>
+          <div className="flex items-center gap-2 mt-2">
             <Badge variant="secondary" className="text-[10px] uppercase font-medium tracking-wider py-0 px-1.5 bg-zinc-800 text-zinc-300 border-zinc-700/50">{role}</Badge>
             <span className="text-[10px] text-zinc-500 font-mono truncate">{project._id}</span>
           </div>
         </div>
 
-        <nav className="flex-1 flex flex-col gap-1">
+        <nav className="flex-1 flex flex-col gap-1 px-1">
           {navItems.map((item) => {
-            const isActive = location.pathname === item.path;
+            const isActive = location.pathname === item.path || (item.path !== `/projects/${projectId}` && location.pathname.startsWith(item.path));
             const Icon = item.icon;
             return (
               <Link
                 key={item.name}
                 to={item.path}
-                className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-all duration-200 ${
+                className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-all duration-200 relative overflow-hidden ${
                   isActive 
-                    ? 'bg-zinc-800/50 text-white font-medium border border-zinc-700/50 shadow-sm' 
-                    : 'text-zinc-400 hover:bg-zinc-800/30 hover:text-zinc-200 border border-transparent'
+                    ? 'bg-zinc-800/60 text-zinc-100 font-medium shadow-sm' 
+                    : 'text-zinc-400 hover:bg-zinc-800/30 hover:text-zinc-200'
                 }`}
               >
-                <Icon className="h-4 w-4" />
+                {isActive && <div className="absolute left-0 top-0 bottom-0 w-1 bg-indigo-500" />}
+                <Icon className={`h-4 w-4 ${isActive ? 'text-indigo-400' : ''}`} />
                 {item.name}
               </Link>
             );
